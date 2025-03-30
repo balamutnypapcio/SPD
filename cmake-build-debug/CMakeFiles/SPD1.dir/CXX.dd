@@ -1,7 +1,0 @@
-ninja_dyndep_version = 1.0
-build CMakeFiles/SPD1.dir/main.cpp.obj: dyndep
-
-build CMakeFiles/SPD1.dir/zadanie.cpp.obj: dyndep
-
-build CMakeFiles/SPD1.dir/problem.cpp.obj: dyndep
-

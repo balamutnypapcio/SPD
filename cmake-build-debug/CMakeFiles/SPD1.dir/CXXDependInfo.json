@@ -5,14 +5,14 @@
 	"compiler-simulate-id" : "",
 	"config" : "Debug",
 	"cxx-modules" : {},
-	"dir-cur-bld" : "C:/Users/jakub/CLionProjects/SPD1/cmake-build-debug",
-	"dir-cur-src" : "C:/Users/jakub/CLionProjects/SPD1",
-	"dir-top-bld" : "C:/Users/jakub/CLionProjects/SPD1/cmake-build-debug",
-	"dir-top-src" : "C:/Users/jakub/CLionProjects/SPD1",
+	"dir-cur-bld" : "C:/Users/jakub/CLionProjects/SPD/SPD1/cmake-build-debug",
+	"dir-cur-src" : "C:/Users/jakub/CLionProjects/SPD/SPD1",
+	"dir-top-bld" : "C:/Users/jakub/CLionProjects/SPD/SPD1/cmake-build-debug",
+	"dir-top-src" : "C:/Users/jakub/CLionProjects/SPD/SPD1",
 	"exports" : [],
 	"forward-modules-from-target-dirs" : [],
 	"include-dirs" : [],
 	"language" : "CXX",
 	"linked-target-dirs" : [],
-	"module-dir" : "C:/Users/jakub/CLionProjects/SPD1/cmake-build-debug/CMakeFiles/SPD1.dir"
+	"module-dir" : "C:/Users/jakub/CLionProjects/SPD/SPD1/cmake-build-debug/CMakeFiles/SPD1.dir"
 }
