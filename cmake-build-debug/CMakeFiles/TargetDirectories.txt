@@ -1,3 +1,0 @@
-C:/Users/jakub/CLionProjects/SPD/SPD1/cmake-build-debug/CMakeFiles/SPD1.dir
-C:/Users/jakub/CLionProjects/SPD/SPD1/cmake-build-debug/CMakeFiles/edit_cache.dir
-C:/Users/jakub/CLionProjects/SPD/SPD1/cmake-build-debug/CMakeFiles/rebuild_cache.dir
