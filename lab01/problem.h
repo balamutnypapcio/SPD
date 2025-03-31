@@ -14,8 +14,9 @@ public:
     std::vector<zadanie> zadania;
 
     int loadFile(const std::string& fileName);
-    void sortByRj();
-    void sortByQj();
+    void sortByRj(std::vector<zadanie>& zad);
+    void sortByQj(std::vector<zadanie>& zad);
+    void sortSCHRAGE();
     void showSequence() const;
     int getTime() const;
 };

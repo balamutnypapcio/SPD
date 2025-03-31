@@ -26,28 +26,52 @@ int problem::loadFile(const std::string& fileName) {
     return 0;
 }
 
-void problem::sortByRj() {
-    std::sort(zadania.begin(), zadania.end(), [](const zadanie& a, const zadanie& b) {
+void problem::sortByRj(std::vector<zadanie>& zad) {
+    std::sort(zad.begin(), zad.end(), [](const zadanie& a, const zadanie& b) {
         return a.rj < b.rj;
     });
 }
 
-void problem::sortByQj() {
-    std::sort(zadania.begin(), zadania.end(), [](const zadanie& a, const zadanie& b) {
+void problem::sortByQj(std::vector<zadanie>& zad) {
+    std::sort(zad.begin(), zad.end(), [](const zadanie& a, const zadanie& b) {
         return a.qj > b.qj;
     });
 }
 
-int problem::getTime() const {
-    int time = 0, completionTime = 0;
+void problem::sortSCHRAGE() {
+    sortByRj(zadania);
+    std::vector<zadanie> zadaniaSCHROUD;
+    int time = 0;
     for (const auto& z : zadania) {
-        if (time < z.rj) {
-            time = z.rj;
+        std::vector<zadanie> zadaniaTMP;
+        time = std::max(time,z.rj)+z.pj;
+        for (const auto& z1 : zadania) {
+            if (time <= z1.rj) {}
+            zadaniaTMP.emplace_back(z1);
         }
-        time += z.pj;
-        completionTime = std::max(completionTime, time + z.qj);
+        sortByQj(zadaniaTMP);
+        for (const auto& z2 : zadaniaTMP) {
+            time = std::max(time,z2.rj)+z2.pj;
+        }
+        if (zadaniaSCHROUD.size() > 0) {
+            zadaniaSCHROUD.insert(zadaniaSCHROUD.end(), zadaniaTMP.begin(), zadaniaTMP.end());
+        }
+        //time = zadaniaSCHROUD.at(zadaniaSCHROUD.size()-1);
     }
-    return completionTime;
+    zadania.clear();
+    zadania = zadaniaSCHROUD;
+}
+
+int problem::getTime() const {
+    int time = 0, completionTime = 0, Cmax = 0;
+    for (const auto& z : zadania) {
+        time = std::max(time,  z.rj) + z.pj;
+        completionTime = time + z.qj;
+        if (completionTime > Cmax) {
+            Cmax = completionTime;
+        }
+    }
+    return Cmax;
 }
 
 void problem::showSequence() const {

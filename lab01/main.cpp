@@ -3,7 +3,7 @@
 #include "problem.h"
 #include <string>
 
-#define FILE_NAME "data/SCHRAGE1.dat"
+#define FILE_NAME "data/SCHRAGE3.dat"
 
 int main() {
     problem problem;
@@ -13,14 +13,21 @@ int main() {
         std::cerr << "Error loading file " << fileName << std::endl;
         return 1;
     }
-    problem.sortByRj();
-    problem.showSequence();
-    std::cout<<"Time by rj: "<<problem.getTime()<<std::endl;
 
-    problem.sortByQj();
+
+    problem.sortByQj(problem.zadania);
     problem.showSequence();
     std::cout<<"Time by qj: "<<problem.getTime()<<std::endl;
 
+
+    problem.sortByRj(problem.zadania);
+    problem.showSequence();
+    std::cout<<"Time by rj: "<<problem.getTime()<<std::endl;
+
+
+    problem.sortSCHRAGE();
+    problem.showSequence();
+    std::cout<<"Time by SCHRAGE: "<<problem.getTime()<<std::endl;
 
     return 0;
 }
