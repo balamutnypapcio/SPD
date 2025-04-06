@@ -16,13 +16,14 @@ int main() {
 
 
     problem.sortByQj(problem.zadania);
-    problem.showSequence();
-    std::cout<<"Time by qj: "<<problem.getTime()<<std::endl;
+   // problem.showSequence();
+   // std::cout<<"Time by qj: "<<problem.getTime()<<std::endl;
 
 
     problem.sortByRj(problem.zadania);
     problem.showSequence();
-    std::cout<<"Time by rj: "<<problem.getTime()<<std::endl;
+    std::cout<<std::endl<<std::endl;
+   // std::cout<<"Time by rj: "<<problem.getTime()<<std::endl;
 
 
     problem.sortSCHRAGE();

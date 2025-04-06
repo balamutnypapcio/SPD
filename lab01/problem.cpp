@@ -41,26 +41,29 @@ void problem::sortByQj(std::vector<zadanie>& zad) {
 void problem::sortSCHRAGE() {
     sortByRj(zadania);
     std::vector<zadanie> zadaniaSCHROUD;
-    int time = 0;
-    for (const auto& z : zadania) {
-        std::vector<zadanie> zadaniaTMP;
-        time = std::max(time,z.rj)+z.pj;
-        for (const auto& z1 : zadania) {
-            if (time <= z1.rj) {}
-            zadaniaTMP.emplace_back(z1);
+    int time = zadania.begin()->rj;
+
+    while (!zadania.empty()) {
+        int last = 0;
+        for (int i = 0; i < zadania.size(); i++) {
+            if (zadania[i].rj > time) break;
+            last = i;
         }
-        sortByQj(zadaniaTMP);
-        for (const auto& z2 : zadaniaTMP) {
-            time = std::max(time,z2.rj)+z2.pj;
+        int biggestQj = 0;
+        for (int i = 0; i < last+1; i++) {
+            if (zadania[i].qj > zadania[biggestQj].qj) {
+                biggestQj = i;
+            }
         }
-        if (zadaniaSCHROUD.size() > 0) {
-            zadaniaSCHROUD.insert(zadaniaSCHROUD.end(), zadaniaTMP.begin(), zadaniaTMP.end());
-        }
-        //time = zadaniaSCHROUD.at(zadaniaSCHROUD.size()-1);
+        zadaniaSCHROUD.push_back(zadania[biggestQj]);
+        time = std::max(time,zadania[biggestQj].rj)+zadania[biggestQj].pj;
+        zadania.erase(zadania.begin()+biggestQj);
     }
     zadania.clear();
     zadania = zadaniaSCHROUD;
 }
+
+
 
 int problem::getTime() const {
     int time = 0, completionTime = 0, Cmax = 0;
