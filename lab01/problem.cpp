@@ -5,7 +5,7 @@
 #include "problem.h"
 
 
-int problem::loadFile(const std::string& fileName) {
+int problem::loadFile(const std::string &fileName) {
     std::ifstream file(fileName);
     if (!file) {
         std::cerr << "Nie można otworzyć pliku: " << fileName << std::endl;
@@ -26,16 +26,46 @@ int problem::loadFile(const std::string& fileName) {
     return 0;
 }
 
-void problem::sortByRj(std::vector<zadanie>& zad) {
-    std::sort(zad.begin(), zad.end(), [](const zadanie& a, const zadanie& b) {
+void problem::sortByRj(std::vector<zadanie> &zad) {
+    std::sort(zad.begin(), zad.end(), [](const zadanie &a, const zadanie &b) {
         return a.rj < b.rj;
     });
 }
 
-void problem::sortByQj(std::vector<zadanie>& zad) {
-    std::sort(zad.begin(), zad.end(), [](const zadanie& a, const zadanie& b) {
+void problem::sortByQj(std::vector<zadanie> &zad) {
+    std::sort(zad.begin(), zad.end(), [](const zadanie &a, const zadanie &b) {
         return a.qj > b.qj;
     });
+}
+
+
+void problem::sortByExhaustiveSearch() {
+    // Make a copy of the original tasks
+    std::vector<zadanie> zadaniaExhaustive = zadania;
+    std::vector<zadanie> zadaniaTMP = zadania;
+    int bestCmax = getTime();
+
+    std::vector<int> indices(zadania.size());
+
+    for (int i = 0; i < indices.size(); i++) {
+        indices[i] = i;
+    }
+
+    do {
+        for (int i = 0; i< zadania.size(); ++i) {
+            zadaniaTMP[i] = zadania[indices[i]];
+        }
+
+        zadania = zadaniaTMP;
+
+
+        if (getTime() < bestCmax) {
+            bestCmax = getTime();
+            zadaniaExhaustive = zadania;
+        }
+    } while (std::next_permutation(indices.begin(), indices.end()));
+
+    zadania = zadaniaExhaustive;
 }
 
 void problem::sortSCHRAGE() {
@@ -50,25 +80,24 @@ void problem::sortSCHRAGE() {
             last = i;
         }
         int biggestQj = 0;
-        for (int i = 0; i < last+1; i++) {
+        for (int i = 0; i < last + 1; i++) {
             if (zadania[i].qj > zadania[biggestQj].qj) {
                 biggestQj = i;
             }
         }
         zadaniaSCHROUD.push_back(zadania[biggestQj]);
-        time = std::max(time,zadania[biggestQj].rj)+zadania[biggestQj].pj;
-        zadania.erase(zadania.begin()+biggestQj);
+        time = std::max(time, zadania[biggestQj].rj) + zadania[biggestQj].pj;
+        zadania.erase(zadania.begin() + biggestQj);
     }
     zadania.clear();
     zadania = zadaniaSCHROUD;
 }
 
 
-
 int problem::getTime() const {
     int time = 0, completionTime = 0, Cmax = 0;
-    for (const auto& z : zadania) {
-        time = std::max(time,  z.rj) + z.pj;
+    for (const auto &z: zadania) {
+        time = std::max(time, z.rj) + z.pj;
         completionTime = time + z.qj;
         if (completionTime > Cmax) {
             Cmax = completionTime;
@@ -78,7 +107,7 @@ int problem::getTime() const {
 }
 
 void problem::showSequence() const {
-    for (const auto& z : zadania) {
+    for (const auto &z: zadania) {
         std::cout << "rj: " << z.rj << ", pj: " << z.pj << ", qj: " << z.qj << std::endl;
     }
 }
