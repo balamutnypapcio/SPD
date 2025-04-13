@@ -123,7 +123,7 @@ void problem::sortSchrageEliminaiton() {
                 continue;
             }
             zadaniaShroudEl.push_back(zadTMP[currentIndex]);
-            //std::cout << "rj: " << zadTMP[currentIndex].rj << ", pj: " << zadTMP[currentIndex].pj << ", qj: " << zadTMP[currentIndex].qj << std::endl;
+            //std::cout << "rj: " << zadTMP[currentIndex].rj << ", pj: " << zadTMP[currentIndex].pj << ", qj: " << zadTMP[currentIndex].qj << "  C: "<< time<<std::endl;
             time = std::max(time, zadTMP[currentIndex].rj) + zadTMP[currentIndex].pj;
             zadTMP.erase(zadTMP.begin() + currentIndex);
 
@@ -139,7 +139,7 @@ void problem::sortSchrageEliminaiton() {
             partNotDone.pj -= partDone.pj;
             zadTMP.push_back(partNotDone);
             zadaniaShroudEl.push_back(partDone);
-            //std::cout << "rj: " << partDone.rj << ", pj: " << partDone.pj << ", qj: " << partDone.qj << std::endl;
+            //std::cout << "rj: " << partDone.rj << ", pj: " << partDone.pj << ", qj: " << partDone.qj <<  "  C: "<< time<<std::endl;
 
             int partDoneIndex = 0;
             for (int i = 0; i < zadTMP.size(); i++) {
@@ -161,20 +161,6 @@ void problem::sortSchrageEliminaiton() {
                     }
             }
         }
-
-
-
-
-        // if (zadTMP[currentIndex].rj < biggestQj.rj) {
-        //     biggestQj.pj = zadTMP[currentIndex].pj-biggestQj.rj;
-        // }
-        // zadaniaShroudEl.push_back(biggestQj);
-        // zadTMP[currentIndex].pj -= biggestQj.rj;
-        // if (zadTMP[currentIndex].pj == 0) {
-        //     zadania.erase(zadania.begin() + currentIndex);
-        // }
-
-
     }
     zadania.clear();
     zadania = zadaniaShroudEl;
