@@ -37,14 +37,26 @@ int main() {
 
     std::cout << std::endl << std::endl;
 
-    // Timing for exhaustive search
-    auto start_exhaustive = std::chrono::high_resolution_clock::now();
-    problem.sortByExhaustiveSearch();
-    auto end_exhaustive = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double, std::milli> exhaustive_time = end_exhaustive - start_exhaustive;
+    // Timing for sortMyMethode rj+qj+pj
+    auto start_rpq = std::chrono::high_resolution_clock::now();
+    problem.sortMyMethode();
+    auto end_rpq = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double, std::milli> rpq_time = end_rpq - start_rpq;
     //problem.showSequence();
-    std::cout << "sortByExhaustiveSearch execution time: " << exhaustive_time.count() << " ms" << std::endl;
-    std::cout << "Time by Exhaustive Search: " << problem.getTime() << std::endl;
+    std::cout<<"Time by rj+pj+qj: "<<problem.getTime()<<std::endl;
+    std::cout << "sortMyMethode execution time: " << rpq_time.count() << " ms" << std::endl;
+
+    std::cout << std::endl << std::endl;
+
+
+    // // Timing for exhaustive search
+    // auto start_exhaustive = std::chrono::high_resolution_clock::now();
+    // problem.sortByExhaustiveSearch();
+    // auto end_exhaustive = std::chrono::high_resolution_clock::now();
+    // std::chrono::duration<double, std::milli> exhaustive_time = end_exhaustive - start_exhaustive;
+    // //problem.showSequence();
+    // std::cout << "sortByExhaustiveSearch execution time: " << exhaustive_time.count() << " ms" << std::endl;
+    // std::cout << "Time by Exhaustive Search: " << problem.getTime() << std::endl;
 
 
     std::cout << std::endl << std::endl;
@@ -58,6 +70,17 @@ int main() {
     //problem.showSequence();
     std::cout << "sortSCHRAGE execution time: " << schrage_time.count() << " ms" << std::endl;
     std::cout << "Time by SCHRAGE: " << problem.getTime() << std::endl;
+
+    std::cout << std::endl << std::endl;
+
+    // Timing for sortSCHRAGE
+    auto start_schrageElimination = std::chrono::high_resolution_clock::now();
+    problem.sortSchrageEliminaiton();
+    auto end_schrageElimination = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double, std::milli> schrageElimination_time = end_schrageElimination - start_schrageElimination;
+    problem.showSequence();
+    std::cout << "sortSchrageElimination execution time: " << schrageElimination_time.count() << " ms" << std::endl;
+    std::cout << "Time by SchrageElimination: " << problem.getTime() << std::endl;
 
 
 

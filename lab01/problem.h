@@ -17,7 +17,9 @@ public:
     void sortByRj(std::vector<zadanie>& zad);
     void sortByQj(std::vector<zadanie>& zad);
     void sortByExhaustiveSearch();
+    void sortMyMethode(); // rj+pj+qj
     void sortSCHRAGE();
+    void sortSchrageEliminaiton();
     void showSequence() const;
     int getTime() const;
 };

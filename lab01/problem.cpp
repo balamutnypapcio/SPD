@@ -38,6 +38,14 @@ void problem::sortByQj(std::vector<zadanie> &zad) {
     });
 }
 
+void problem::sortMyMethode() {
+    std::sort(zadania.begin(), zadania.end(), [](const zadanie &a, const zadanie &b) {
+        int scoreA = a.rj + a.pj + a.qj;
+        int scoreB = b.rj + b.pj + b.qj;
+        return scoreA < scoreB;
+    });
+}
+
 
 void problem::sortByExhaustiveSearch() {
     // Make a copy of the original tasks
@@ -51,20 +59,16 @@ void problem::sortByExhaustiveSearch() {
         indices[i] = i;
     }
 
-    do {
-        for (int i = 0; i< zadania.size(); ++i) {
+    while (std::next_permutation(indices.begin(), indices.end())) {
+        for (int i = 0; i < zadania.size(); ++i) {
             zadaniaTMP[i] = zadania[indices[i]];
         }
-
         zadania = zadaniaTMP;
-
-
         if (getTime() < bestCmax) {
             bestCmax = getTime();
             zadaniaExhaustive = zadania;
         }
-    } while (std::next_permutation(indices.begin(), indices.end()));
-
+    }
     zadania = zadaniaExhaustive;
 }
 
@@ -91,6 +95,83 @@ void problem::sortSCHRAGE() {
     }
     zadania.clear();
     zadania = zadaniaSCHROUD;
+}
+
+
+void problem::sortSchrageEliminaiton() {
+    sortByRj(zadania);
+    std::vector<zadanie> zadTMP = zadania;
+    std::vector<zadanie> zadaniaShroudEl;
+    int currentIndex = 0;
+    int time = zadTMP.begin()->rj;
+
+    while (!zadTMP.empty()) {
+        std::vector<zadanie> zadTMPAvaible;
+        for (int i = 0; i < zadTMP.size(); i++) {
+            if (time + zadTMP[currentIndex].pj > zadTMP[i].rj ) {
+                zadTMPAvaible.push_back(zadTMP[i]);
+                if (zadTMP[currentIndex].qj >= zadTMP[i].qj) {
+                    zadTMPAvaible.pop_back();
+                }
+            }
+        }
+        if (zadTMPAvaible.empty()) {
+            zadaniaShroudEl.push_back(zadTMP[currentIndex]);
+            time = std::max(time, zadTMP[currentIndex].rj) + zadTMP[currentIndex].pj;
+            zadTMP.erase(zadTMP.begin() + currentIndex);
+
+            currentIndex=0;
+            continue;
+        }
+        sortByQj(zadTMPAvaible);
+        zadanie biggestQj = zadTMPAvaible[0];
+        if(time <= biggestQj.rj) {
+            zadanie partDone = zadTMP[currentIndex];
+            partDone.pj = biggestQj.rj - partDone.rj;
+            zadanie partNotDone = zadTMP[currentIndex];
+            partNotDone.pj -= partDone.pj;
+            zadTMP.push_back(partNotDone);
+            zadaniaShroudEl.push_back(partDone);
+            int partDoneIndex = 0;
+            for (int i = 0; i < zadTMP.size(); i++) {
+                if (partDone.rj == zadTMP[i].rj &&
+                    partDone.qj == zadTMP[i].qj) {
+                    partDoneIndex= i;
+                    break;
+                    }
+            }
+            zadTMP.erase(zadTMP.begin() + partDoneIndex);
+            time += partDone.pj;
+        }else {
+            //zadaniaShroudEl.push_back(biggestQj);
+            for (int i = 0; i < zadTMP.size(); i++) {
+                if (biggestQj.rj == zadTMP[i].rj &&
+                    biggestQj.pj == zadTMP[i].pj &&
+                    biggestQj.qj == zadTMP[i].qj) {
+                    currentIndex = i;
+                    break;
+                    }
+            }
+        }
+        if (zadTMP[currentIndex].pj == 0) {
+            zadTMP.erase(zadTMP.begin() + currentIndex);
+        }
+
+
+
+        // if (zadTMP[currentIndex].rj < biggestQj.rj) {
+        //     biggestQj.pj = zadTMP[currentIndex].pj-biggestQj.rj;
+        // }
+        // zadaniaShroudEl.push_back(biggestQj);
+        // zadTMP[currentIndex].pj -= biggestQj.rj;
+        // if (zadTMP[currentIndex].pj == 0) {
+        //     zadania.erase(zadania.begin() + currentIndex);
+        // }
+
+
+    }
+    zadania.clear();
+    zadania = zadaniaShroudEl;
 }
 
 
