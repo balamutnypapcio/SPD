@@ -10,12 +10,11 @@
 int main() {
 
     std::vector<int> timeCqj;
-
     std::vector<double> timeTqj;
 
 
     const char* FILE_NAMES[] = {
-        "/home/mikolaj/studia/SPD/Lab02/data/SCHRAGE1.dat"
+        "/home/jakub/SPD/Lab02/data/SCHRAGE1.dat"
     };
     for(int k=0; k<1; k++) {
         for (int i = 0; i < 1; i++) {
@@ -26,45 +25,70 @@ int main() {
                 std::cerr << "Error loading file " << fileName << std::endl;
                 return 1;
             }
-            std::cout<<"--------------------------------------------------------"<<std::endl;
+            std::cout<<"------------------File: "<<FILE_NAMES[i]<<"------------------"<<std::endl;
             std::cout << std::endl;
-            std::cout<<"File: "<<FILE_NAMES[i]<<std::endl;
             std::cout << std::endl;
-            std::cout<<"--------------------------------------------------------"<<std::endl;
-
 
             // Timing for sortByQj
+            std::cout<<"------------------Sort By Qj------------------"<<std::endl;
             auto start_qj = std::chrono::high_resolution_clock::now();
             problem.sortByQj(problem.zadania);
             auto end_qj = std::chrono::high_resolution_clock::now();
             std::chrono::duration<double, std::milli> qj_time = end_qj - start_qj;
-            problem.showSequence();
             std::cout<<"Time by qj: "<<problem.getTime()<<std::endl;
             std::cout << "sortByQj execution time: " << qj_time.count() << " ms" << std::endl;
+            std::cout << std::endl;
+            std::cout << std::endl;
 
             timeCqj.push_back(problem.getTime());
             timeTqj.push_back(qj_time.count());
 
 
             //Timing for LSA Two machines
+            std::cout<<"------------------Two Machine LSA------------------"<<std::endl;
+            auto start_lsa = std::chrono::high_resolution_clock::now();
             auto [machine1, machine2] = problem.sortTwoMachineLSA(problem.zadania);
-            problem.showSequence();
+            auto end_lsa = std::chrono::high_resolution_clock::now();
+            std::chrono::duration<double, std::milli> lsa_time = end_lsa - start_lsa;
             std::cout<<"Time by TwoMachineLSA: "<<problem.getTimeTwoMachines(machine1, machine2)<<std::endl;
+            std::cout << "sortTwoMachineLSA execution time: " << lsa_time.count() << " ms" << std::endl;
+            std::cout << std::endl;
 
 
             //Timing for LPT Two Machines
+            std::cout<<"------------------Two Machine LPT------------------"<<std::endl;
+            auto start_lpt = std::chrono::high_resolution_clock::now();
             auto [machine1LPT, machine2LPT] = problem.sortTwoMachineLPT(problem.zadania);
-            problem.showSequence();
-            std::cout<<"Timeb by TwoMachineLPT: "<<problem.getTimeTwoMachines(machine1LPT, machine2LPT)<<std::endl;
+            auto end_lpt = std::chrono::high_resolution_clock::now();
+            std::chrono::duration<double, std::milli> lpt_time = end_lpt - start_lpt;
+            std::cout<<"Time by TwoMachineLPT: "<<problem.getTimeTwoMachines(machine1LPT, machine2LPT)<<std::endl;
+            std::cout << "sortTwoMachineLPT execution time: " << lpt_time.count() << " ms" << std::endl;
+            std::cout << std::endl;
+
+
+            //Timing for Dynamic Programming Two Machines
+            std::cout<<"------------------Two Machine Dynamic Programming------------------"<<std::endl;
+            auto start_pd = std::chrono::high_resolution_clock::now();
+            auto [machine1PD, machine2PD] = problem.sortTwoMachinePD(problem.zadania);
+            auto end_pd = std::chrono::high_resolution_clock::now();
+            std::chrono::duration<double, std::milli> pd_time = end_pd - start_pd;
+            std::cout<<"Time by TwoMachinePD: "<<problem.getTimeTwoMachines(machine1PD, machine2PD)<<std::endl;
+            std::cout << "sortTwoMachinePD execution time: " << pd_time.count() << " ms" << std::endl;
+            std::cout << std::endl;
+
+
+            //Timing for Exhaustive Search Two Machines
+            std::cout<<"------------------Two Machine Exhaustive Search------------------"<<std::endl;
+            auto start_ex = std::chrono::high_resolution_clock::now();
+            auto [machine1EX, machine2EX] = problem.sortTwoMachineExhaustive(problem.zadania);
+            auto end_ex = std::chrono::high_resolution_clock::now();
+            std::chrono::duration<double, std::milli> ex_time = end_ex - start_ex;
+            std::cout<<"Time by TwoMachineExhaustive: "<<problem.getTimeTwoMachines(machine1EX, machine2EX)<<std::endl;
+            std::cout << "sortTwoMachineExhaustive execution time: " << ex_time.count() << " ms" << std::endl;
+            std::cout << std::endl;
 
         }
-     //std::cout<<"Pętla numer: "<<k<<std::endl;
     }
-
-    //std::cout<<"Average qj: "<< std::accumulate(timeTqj.begin(), timeTqj.end(), 0.0) / timeTqj.size() <<std::endl;
-    //std::cout<<"C qj: " <<timeCqj.at(0) << std::endl;
-
-
 
     return 0;
 }

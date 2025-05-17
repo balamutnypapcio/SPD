@@ -205,6 +205,121 @@ std::pair<std::vector<zadanie>, std::vector<zadanie>> problem::sortTwoMachineLPT
     return std::make_pair(machine1, machine2);
 }
 
+
+std::pair<std::vector<zadanie>, std::vector<zadanie>> problem::sortTwoMachinePD(std::vector<zadanie>& zad) {
+    int n = zad.size();
+
+    // Obliczanie sumy wszystkich czasów wykonania
+    int sum_pj = 0;
+    for (const auto& z : zad) {
+        sum_pj += z.pj;
+    }
+
+    // Obliczanie rozmiaru K (K = suma_pj/2 + 1)
+    int K = (sum_pj / 2) + 1;
+
+    // Tworzenie tablicy T[n+1][K]
+    std::vector<std::vector<bool>> T(n + 1, std::vector<bool>(K, false));
+
+    // Inicjalizacja pierwszej kolumny jedynkami
+    for (int i = 0; i <= n; i++) {
+        T[i][0] = true;
+    }
+
+    // Wypełnianie tablicy zgodnie z algorytmem
+    for (int j = 1; j <= n; j++) {
+        for (int k = 1; k < K; k++) {
+            // Sprawdzanie warunków z algorytmu
+            if (T[j-1][k] == true) {
+                T[j][k] = true;
+            } else if (k >= zad[j-1].pj && T[j-1][k-zad[j-1].pj] == true) {
+                T[j][k] = true;
+            }
+        }
+    }
+
+    // Backtracking - odtwarzanie rozwiązania
+    std::vector<zadanie> machine1, machine2;
+    int k = K - 1;
+
+    // Szukamy największego możliwego k
+    while (k > 0 && !T[n][k]) {
+        k--;
+    }
+
+    // Odtwarzanie przydziału zadań
+    int j = n;
+    while (j > 0 && k >= 0) {
+        if (k >= zad[j-1].pj && T[j-1][k-zad[j-1].pj]) {
+            machine1.push_back(zad[j-1]);
+            k -= zad[j-1].pj;
+        } else {
+            machine2.push_back(zad[j-1]);
+        }
+        j--;
+    }
+
+    // Dodajemy pozostałe zadania do drugiej maszyny
+    while (j > 0) {
+        machine2.push_back(zad[j-1]);
+        j--;
+    }
+
+    // Odwracamy kolejność, bo dodawaliśmy od końca
+    std::reverse(machine1.begin(), machine1.end());
+    std::reverse(machine2.begin(), machine2.end());
+
+    return std::make_pair(machine1, machine2);
+}
+
+
+
+
+std::pair<std::vector<zadanie>, std::vector<zadanie>> problem::sortTwoMachineExhaustive(std::vector<zadanie>& zad) {
+    int n = zad.size();
+    std::vector<zadanie> best_machine1, best_machine2;
+    int best_makespan = INT_MAX;
+
+    // Generujemy wszystkie możliwe kombinacje przydziału zadań do maszyn
+    // Używamy maski bitowej: 0 oznacza przydzielenie do maszyny 1, 1 do maszyny 2
+    for (int mask = 0; mask < (1 << n); mask++) {
+        std::vector<zadanie> current_machine1, current_machine2;
+
+        // Przydzielamy zadania do maszyn na podstawie bitów w masce
+        for (int i = 0; i < n; i++) {
+            if (mask & (1 << i)) {
+                current_machine2.push_back(zad[i]);
+            } else {
+                current_machine1.push_back(zad[i]);
+            }
+        }
+
+        // Obliczamy makespan dla aktualnego przydziału
+        int current_makespan = getTimeTwoMachines(current_machine1, current_machine2);
+
+        // Aktualizujemy najlepsze rozwiązanie, jeśli znaleźliśmy lepsze
+        if (current_makespan < best_makespan) {
+            best_makespan = current_makespan;
+            best_machine1 = current_machine1;
+            best_machine2 = current_machine2;
+        }
+
+        // Jeśli znaleźliśmy idealne zrównoważenie (różnica czasów <= 1), możemy przerwać
+        int time1 = 0, time2 = 0;
+        for (const auto& z : current_machine1) time1 += z.pj;
+        for (const auto& z : current_machine2) time2 += z.pj;
+        if (abs(time1 - time2) <= 1) {
+            best_machine1 = current_machine1;
+            best_machine2 = current_machine2;
+            break;
+        }
+    }
+    return std::make_pair(best_machine1, best_machine2);
+}
+
+
+
+
 int problem::getTime() const {
     int time = 0, completionTime = 0, Cmax = 0;
     for (const auto &z: zadania) {
