@@ -49,8 +49,8 @@
 	"kind" : "codemodel",
 	"paths" : 
 	{
-		"build" : "/home/jakub/SPD/Lab02/cmake-build-debug",
-		"source" : "/home/jakub/SPD/Lab02"
+		"build" : "/home/mikolaj/studia/SPD/repo/SPD/Lab02/cmake-build-debug",
+		"source" : "/home/mikolaj/studia/SPD/repo/SPD/Lab02"
 	},
 	"version" : 
 	{

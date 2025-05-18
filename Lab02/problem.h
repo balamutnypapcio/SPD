@@ -26,6 +26,8 @@ public:
     std::pair<std::vector<zadanie>, std::vector<zadanie>> sortTwoMachineLPT(std::vector<zadanie>& zad);
     std::pair<std::vector<zadanie>, std::vector<zadanie>> sortTwoMachinePD(std::vector<zadanie>& zad);
     std::pair<std::vector<zadanie>, std::vector<zadanie>> sortTwoMachineExhaustive(std::vector<zadanie>& zad);
+    std::pair<std::vector<zadanie>, std::vector<zadanie>> sortTwoMachinePTAS(std::vector<zadanie> & zad, int k);
+    std::pair<std::vector<zadanie>, std::vector<zadanie>> sortTwoMachineFPTAS(std::vector<zadanie> & zad, int k);
     void showSequence() const;
     int getTime() const;
     int getTimeTwoMachines(const std::vector<zadanie>& m1, const std::vector<zadanie>& m2) const;

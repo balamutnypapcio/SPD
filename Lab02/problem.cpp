@@ -316,8 +316,56 @@ std::pair<std::vector<zadanie>, std::vector<zadanie>> problem::sortTwoMachineExh
     }
     return std::make_pair(best_machine1, best_machine2);
 }
+std::pair<std::vector<zadanie>, std::vector<zadanie>> problem::sortTwoMachinePTAS(std::vector<zadanie> &zad, int k){
+    std::vector<zadanie> bestZad(zad.begin(), zad.begin()+k);
+    std::vector<zadanie> restZad(zad.begin()+(k+1), zad.end());
+    std::vector<zadanie> endM1, endM2;
 
+    std::sort(zad.begin(), zad.end(), [](const zadanie &a , const zadanie &b)
+    {return a.pj > b.pj;});
 
+    auto [bestM1, bestM2] = sortTwoMachineExhaustive(bestZad);
+    auto [m1, m2] = sortTwoMachineLPT(restZad);
+
+    endM1.insert(endM1.end(), bestM1.begin(), bestM1.end());
+    endM1.insert(endM1.end(), m1.begin(), m1.end());
+
+    endM2.insert(endM2.end(), bestM2.begin(), bestM2.begin());
+    endM2.insert(endM2.begin(), m2.begin(), m2.end());
+
+    return std::make_pair(endM1, endM2);
+}
+
+std::pair<std::vector<zadanie>, std::vector<zadanie>> problem::sortTwoMachineFPTAS(std::vector<zadanie> &zad, int k) {
+
+    std::vector<zadanie> zadByK;
+    int a = 0;
+
+    for(auto x:zad){
+        x.pj = x.pj/k;
+        x.id = a;
+        zadByK.push_back(x);
+        a++;
+    }
+
+    auto [bestM1, bestM2] = sortTwoMachinePD(zadByK);
+
+    std::sort(bestM1.begin(), bestM1.end(), [](const zadanie &a , const zadanie &b)
+    {return a.id < b.id;});
+    std::sort(bestM2.begin(), bestM2.end(), [](const zadanie &a , const zadanie &b)
+    {return a.id < b.id;});
+
+    std::vector<zadanie> finalM1, finalM2;
+
+    for (const zadanie& z : bestM1) {
+        finalM1.push_back(zad[z.id]);
+    }
+    for (const zadanie& z : bestM2) {
+        finalM2.push_back(zad[z.id]);
+    }
+
+    return std::make_pair(finalM1, finalM2);
+}
 
 
 int problem::getTime() const {
@@ -329,6 +377,7 @@ int problem::getTime() const {
             Cmax = completionTime;
         }
     }
+
     return Cmax;
 }
 

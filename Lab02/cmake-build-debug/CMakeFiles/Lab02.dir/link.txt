@@ -1,1 +1,0 @@
-/usr/bin/c++ -g -Wl,--dependency-file=CMakeFiles/Lab02.dir/link.d CMakeFiles/Lab02.dir/main.cpp.o CMakeFiles/Lab02.dir/zadanie.cpp.o CMakeFiles/Lab02.dir/problem.cpp.o -o Lab02

@@ -14,7 +14,7 @@ int main() {
 
 
     const char* FILE_NAMES[] = {
-        "/home/jakub/SPD/Lab02/data/SCHRAGE1.dat"
+        "/home/mikolaj/studia/SPD/repo/SPD/Lab02/data/SCHRAGE9.dat"
     };
     for(int k=0; k<1; k++) {
         for (int i = 0; i < 1; i++) {
@@ -85,6 +85,30 @@ int main() {
             std::chrono::duration<double, std::milli> ex_time = end_ex - start_ex;
             std::cout<<"Time by TwoMachineExhaustive: "<<problem.getTimeTwoMachines(machine1EX, machine2EX)<<std::endl;
             std::cout << "sortTwoMachineExhaustive execution time: " << ex_time.count() << " ms" << std::endl;
+            std::cout << std::endl;
+
+
+            //Timing for PTAS Search Two Machines
+            std::cout<<"------------------Two Machine PTAS Search------------------"<<std::endl;
+            int deep = 8;
+            auto start_ptas = std::chrono::high_resolution_clock::now();
+            auto [machine1PTAS, machine2PTAS] = problem.sortTwoMachinePTAS(problem.zadania, deep);
+            auto end_ptas = std::chrono::high_resolution_clock::now();
+            std::chrono::duration<double, std::milli> ptas_time = end_ptas - start_ptas;
+            std::cout<<"Time by twoMachinePTAS: "<<problem.getTimeTwoMachines(machine1PTAS, machine2PTAS)<<std::endl;
+            std::cout << "sortTwoMachinePTAS execution time: " << ptas_time.count() << " ms" << std::endl;
+            std::cout << std::endl;
+
+
+            //Timing for FPTAS Search Two Machines
+            std::cout<<"------------------Two Machine FPTAS Search------------------"<<std::endl;
+            int deepF = 8;
+            auto start_fptas = std::chrono::high_resolution_clock::now();
+            auto [machine1FPTAS, machine2FPTAS] = problem.sortTwoMachineFPTAS(problem.zadania, deepF);
+            auto end_fptas = std::chrono::high_resolution_clock::now();
+            std::chrono::duration<double, std::milli> fptas_time = end_ptas - start_ptas;
+            std::cout<<"Time by twoMachineFPTAS: "<<problem.getTimeTwoMachines(machine1FPTAS, machine2FPTAS)<<std::endl;
+            std::cout << "sortTwoMachineFPTAS execution time: " << fptas_time.count() << " ms" << std::endl;
             std::cout << std::endl;
 
         }
