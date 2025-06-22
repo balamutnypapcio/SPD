@@ -7,6 +7,7 @@
 #include <limits>
 #include <chrono>
 #include <iomanip>
+#include <numeric>
 
 
 using namespace std;
@@ -118,6 +119,99 @@ int NEH(const Matrix& processingTimes, vector<int>& bestPerm) {
 
     return calculateCmax(bestPerm, processingTimes);
 }
+// ========== FNEH ==========
+int FNEH(const Matrix& processingTimes, vector<int>& bestPerm) {
+    int n = processingTimes.size();
+    int m = processingTimes[0].size();
+    vector<pair<int, int>> sumJobs(n);
+
+    // Step 1: Sort jobs by total processing time
+    for (int i = 0; i < n; ++i) {
+        int total = accumulate(processingTimes[i].begin(), processingTimes[i].end(), 0);
+        sumJobs[i] = { total, i };
+    }
+    sort(sumJobs.rbegin(), sumJobs.rend());  // Descending by total time
+
+    bestPerm.clear();
+    bestPerm.push_back(sumJobs[0].second);
+
+    // Preallocate forward and tail matrices
+    vector<vector<int>> C(n + 1, vector<int>(m, 0));
+    vector<vector<int>> Q(n + 1, vector<int>(m, 0));
+    vector<int> F(m);
+
+    for (int k = 1; k < n; ++k) {
+        int job = sumJobs[k].second;
+        int currentSize = bestPerm.size();
+        int bestCmax = numeric_limits<int>::max();
+        int bestPos = 0;
+
+        for (int pos = 0; pos <= currentSize; ++pos) {
+            // === 1. Build sequence with job inserted at pos
+            vector<int> tempSeq = bestPerm;
+            tempSeq.insert(tempSeq.begin() + pos, job);
+
+            // === 2. Compute forward C
+            for (int i = 0; i <= currentSize; ++i) {
+                int curJob = tempSeq[i];
+                for (int j = 0; j < m; ++j) {
+                    if (i == 0 && j == 0)
+                        C[i][j] = processingTimes[curJob][j];
+                    else if (i == 0)
+                        C[i][j] = C[i][j - 1] + processingTimes[curJob][j];
+                    else if (j == 0)
+                        C[i][j] = C[i - 1][j] + processingTimes[curJob][j];
+                    else
+                        C[i][j] = max(C[i - 1][j], C[i][j - 1]) + processingTimes[curJob][j];
+                }
+            }
+
+            // === 3. Compute tail Q
+            for (int i = currentSize; i >= 0; --i) {
+                int curJob = tempSeq[i];
+                for (int j = m - 1; j >= 0; --j) {
+                    if (i == currentSize && j == m - 1)
+                        Q[i][j] = 0;
+                    else if (i == currentSize)
+                        Q[i][j] = Q[i][j + 1] + processingTimes[curJob][j + 1];
+                    else if (j == m - 1)
+                        Q[i][j] = Q[i + 1][j] + processingTimes[curJob][j];
+                    else
+                        Q[i][j] = max(Q[i + 1][j] + processingTimes[curJob][j],
+                                      Q[i][j + 1] + processingTimes[curJob][j + 1]);
+                }
+            }
+
+            // === 4. Compute F (new job's completion time at pos)
+            for (int j = 0; j < m; ++j) {
+                if (j == 0)
+                    F[j] = (pos == 0 ? 0 : C[pos - 1][j]) + processingTimes[job][j];
+                else
+                    F[j] = max(F[j - 1], (pos == 0 ? 0 : C[pos - 1][j])) + processingTimes[job][j];
+            }
+
+            // === 5. Combine F and Q to get Cmax
+            int cmax = 0;
+            for (int j = 0; j < m; ++j)
+                cmax = max(cmax, F[j] + Q[pos][j]);
+
+            if (cmax < bestCmax) {
+                bestCmax = cmax;
+                bestPos = pos;
+            }
+        }
+
+        // Insert job at best position found
+        bestPerm.insert(bestPerm.begin() + bestPos, job);
+    }
+
+    return calculateCmax(bestPerm, processingTimes);
+}
+
+
+
+
+
 
 // ========== Johnson dla m=2 ==========
 int johnson(const Matrix& processingTimes, vector<int>& jobOrder) {
@@ -150,7 +244,7 @@ int johnson(const Matrix& processingTimes, vector<int>& jobOrder) {
 int main() {
     using namespace chrono;
 
-    string filename = "/home/jakub/SPD/Lab03/instances/flowshop_n10_m2.csv";
+    string filename = "X:/C++/SPD/SPD/Lab03/instances/flowshop_n100_m3.csv";
     Matrix processingTimes = loadCSV(filename);
 
     if (processingTimes.empty()) return 1;
@@ -183,6 +277,20 @@ int main() {
     cout << "Cmax: " << cmaxNEH << ", Kolejność: ";
     for (int j : bestPerm) cout << "Job_" << j + 1 << " ";
     cout << "\nCzas wykonania: " << fixed << setprecision(5) << timeNEH << " ms\n\n";
+
+
+    cout << "--- FNEH ---\n";
+    auto startFNEH = high_resolution_clock::now();
+    int cmaxFNEH = FNEH(processingTimes, bestPerm);
+    auto endFNEH = high_resolution_clock::now();
+    auto durationFNEH = duration_cast<microseconds>(endFNEH - startFNEH);
+    double timeFNEH = durationFNEH.count() / 1000.0;
+
+    cout << "Cmax: " << cmaxFNEH << ", Kolejność: ";
+    for (int j : bestPerm) cout << "Job_" << j + 1 << " ";
+    cout << "\nCzas wykonania: " << fixed << setprecision(5) << timeFNEH << " ms\n\n";
+
+
 
     if (m == 2) {
         cout << "--- Johnson (m=2) ---\n";
